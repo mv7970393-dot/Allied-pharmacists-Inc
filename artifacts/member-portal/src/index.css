@@ -1,0 +1,84 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+button {
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: #aac4d8;
+}
+
+.theme-light {
+  --bg-main: #eaf4fc;
+  --bg-card: white;
+  --bg-sidebar: white;
+  --text-primary: #1a2a3a;
+  --text-secondary: #6b7a8d;
+  --border-color: #cdd8e8;
+  --hover-bg: #d0e8f5;
+  --active-bg: #d6e8f7;
+}
+
+.theme-dark {
+  --bg-main: #1a1a2e;
+  --bg-card: #252540;
+  --bg-sidebar: #1e1e30;
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0b8;
+  --border-color: #3a3a50;
+  --hover-bg: #303050;
+  --active-bg: #404060;
+}
+
+body:not(.theme-light):not(.theme-dark) {
+  --bg-main: #eaf4fc;
+  --bg-card: white;
+  --bg-sidebar: white;
+  --text-primary: #1a2a3a;
+  --text-secondary: #6b7a8d;
+  --border-color: #cdd8e8;
+  --hover-bg: #d0e8f5;
+  --active-bg: #d6e8f7;
+}
+
+.folder-row:hover {
+  background: var(--hover-bg) !important;
+}
+
+.folder-row.active {
+  background: var(--active-bg) !important;
+  border-left: 3px solid #1b4f72 !important;
+  font-weight: 700;
+}
+
+.doc-row:hover {
+  background: var(--hover-bg) !important;
+}
+
+.folder-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(27, 79, 114, 0.15) !important;
+}
+
+.dl-btn:hover {
+  background: #1b4f72 !important;
+  color: white !important;
+}
