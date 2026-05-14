@@ -36,58 +36,8 @@ interface Doc {
 type DocsMap = Record<string, Doc[]>;
 
 const STATIC_DOCS: DocsMap = {
-  f1: [
-    { id: "d1", name: "API-BD Showpad Portal Instructions.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d2", name: "BD Injection Technique Reference Card.pdf", size: "—", date: "2025", type: "pdf" },
-  ],
-  f2: [
-    { id: "d3", name: "Minor Ailments Poster – Pharmacist (Male).png", size: "—", date: "2025", type: "img" },
-    { id: "d4", name: "Minor Ailments Poster – Pharmacist (Female).png", size: "—", date: "2025", type: "img" },
-    { id: "d5", name: "Minor Ailments Poster – Gold Background.png", size: "—", date: "2025", type: "img" },
-    { id: "d6", name: "Minor Ailments Poster – Teal Background.png", size: "—", date: "2025", type: "img" },
-    { id: "d7", name: "Minor Ailments Poster – One Visit One Solution (Photo).png", size: "—", date: "2025", type: "img" },
-    { id: "d8", name: "Minor Ailments Poster – No Family Doctor (Illustrated).png", size: "—", date: "2025", type: "img" },
-    { id: "d9", name: "Minor Ailments Poster – One Visit One Solution (Illustrated).png", size: "—", date: "2025", type: "img" },
-    { id: "d10", name: "Minor Ailments Poster – No Family Doctor (Photo).png", size: "—", date: "2025", type: "img" },
-  ],
-  f3: [
-    { id: "d11", name: "Progress in Practice – Webinar Announcement.png", size: "—", date: "Jan 26, 2026", type: "img" },
-    { id: "d12", name: "Progress in Practice – Sustaining Clinical Services (Slides).pdf", size: "—", date: "Jan 26, 2026", type: "pdf" },
-    { id: "d13", name: "MAPflow Incident Reporting – Exclusive API Rate Letter.pdf", size: "—", date: "2026", type: "pdf" },
-    { id: "d14", name: "MAPflow – Incident Reporting Coming to MAPflow (Poster).png", size: "—", date: "2026", type: "img" },
-  ],
-  f4: [
-    { id: "d15", name: "Payment Goat – Handheld Terminals Pricing Sheet.pdf", size: "—", date: "2026", type: "pdf" },
-    { id: "d16", name: "Payment Goat – Merchant Info Form.pdf", size: "—", date: "2026", type: "pdf" },
-  ],
-  f5: [
-    { id: "d17", name: "API Member Benefits Package.pdf", size: "—", date: "2026", type: "pdf" },
-    { id: "d18", name: "Scotiabank – API Member Program Features.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d19", name: "Communimed – Your Pharmacist & You Program.pdf", size: "—", date: "2026", type: "pdf" },
-    { id: "d20", name: "Richards Packaging – API Vials & Dispill Deal.pdf", size: "—", date: "2026", type: "pdf" },
-  ],
-  f6: [
-    { id: "d21", name: "Frequent Dispensing – Documentation Consent Form.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d22", name: "Consent Form for Seasonal Influenza (Flu) Vaccine.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d23", name: "ODB Short Dispensing Clinical Assessment Form.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d24", name: "Short Frequent Dispensing Clinical Assessment Form (Private).pdf", size: "—", date: "2025", type: "pdf" },
-  ],
-  f7: [
-    { id: "d25", name: "API Flyer – Prescription Extension.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d26", name: "API Flyer – Gardasil 9 (HPV Vaccine).pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d27", name: "API Flyer – We Prescribe for Minor Ailments.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d28", name: "API Flyer – Fight Seasonal Allergies.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d29", name: "API Flyer – Flu Season Is Here.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d30", name: "API Flyer – Flu Season We Offer Vaccines.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d31", name: "API Flyer – Minor Ailments Conditions List (Poster).png", size: "—", date: "2025", type: "img" },
-  ],
-  f8: [
-    { id: "d32", name: "API Pharmacy Compliance & Inspection Toolkit.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d33", name: "API Compounding – Master Formulation Record Template.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d34", name: "API Policy and Procedure Manual Template.pdf", size: "—", date: "2025", type: "pdf" },
-    { id: "d35", name: "Standards of Practice Template.pdf", size: "—", date: "2025", type: "pdf" },
-  ],
-  f9: [], f10: [], f11: [], f12: [],
+  f1: [], f2: [], f3: [], f4: [], f5: [], f6: [],
+  f7: [], f8: [], f9: [], f10: [], f11: [], f12: [],
 };
 
 interface Settings {

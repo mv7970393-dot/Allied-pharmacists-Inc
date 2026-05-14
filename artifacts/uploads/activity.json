@@ -1,0 +1,82 @@
+[
+  {
+    "id": "act-1778791174105-uuo5enc7ufm",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Downloaded file",
+    "detail": "API-BD Showpad Portal Instructions.pdf",
+    "time": "2026-05-14, 20:39:34",
+    "timestamp": 1778791174621
+  },
+  {
+    "id": "act-1778791177741-merb184lkan",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Downloaded file",
+    "detail": "API-BD Showpad Portal Instructions.pdf",
+    "time": "2026-05-14, 20:39:37",
+    "timestamp": 1778791177741
+  },
+  {
+    "id": "act-1778791178566-48f3gs2ezqq",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Downloaded file",
+    "detail": "API-BD Showpad Portal Instructions.pdf",
+    "time": "2026-05-14, 20:39:38",
+    "timestamp": 1778791178567
+  },
+  {
+    "id": "act-1778791352790-64rs8ph715",
+    "email": "michael.v.iskander@gmail.com",
+    "action": "Downloaded file",
+    "detail": "API-BD Showpad Portal Instructions.pdf",
+    "time": "2026-05-14, 20:42:32",
+    "timestamp": 1778791352835
+  },
+  {
+    "id": "act-1778791363975-uyqs19rwcym",
+    "email": "michael.v.iskander@gmail.com",
+    "action": "Downloaded file",
+    "detail": "API-BD Showpad Portal Instructions.pdf",
+    "time": "2026-05-14, 20:42:43",
+    "timestamp": 1778791363976
+  },
+  {
+    "id": "act-1778791374175-zhmi5eqfy2q",
+    "email": "michael.v.iskander@gmail.com",
+    "action": "Signed out",
+    "detail": "",
+    "time": "2026-05-14, 20:42:54",
+    "timestamp": 1778791374175
+  },
+  {
+    "id": "act-1778791379457-ljkn80had8",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Signed in",
+    "detail": "",
+    "time": "2026-05-14, 20:42:59",
+    "timestamp": 1778791379458
+  },
+  {
+    "id": "act-1778791396137-mi8wkizupzl",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Uploaded file",
+    "detail": "A Tale of Two Cities ch. 17,18,19 (1).docx",
+    "time": "2026-05-14, 20:43:16",
+    "timestamp": 1778791396138
+  },
+  {
+    "id": "act-1778791414566-zi4qkfg91xh",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Downloaded file",
+    "detail": "API-BD Showpad Portal Instructions.pdf",
+    "time": "2026-05-14, 20:43:34",
+    "timestamp": 1778791414566
+  },
+  {
+    "id": "act-1778791424720-mrft71n4ym",
+    "email": "sally@alliedpharmacists.ca",
+    "action": "Downloaded file",
+    "detail": "BD Injection Technique Reference Card.pdf",
+    "time": "2026-05-14, 20:43:44",
+    "timestamp": 1778791424720
+  }
+]
