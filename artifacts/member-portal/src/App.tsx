@@ -70,14 +70,18 @@ function GearIcon() {
   );
 }
 
-function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUser }: {
+interface Folder { id: string; name: string; }
+
+function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUser, allFolders, onFoldersChange }: {
   onClose: () => void;
   isAdmin: boolean;
   settings: Settings;
   onSettingsChange: (s: Settings) => void;
   loggedInUser: string;
+  allFolders: Folder[];
+  onFoldersChange: () => void;
 }) {
-  const [tab, setTab] = useState<"settings" | "activity" | "upload" | "files">("settings");
+  const [tab, setTab] = useState<"settings" | "activity" | "upload" | "files" | "folders">("settings");
   const [uploadFolder, setUploadFolder] = useState("f1");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -85,7 +89,17 @@ function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUs
   const [activities, setActivities] = useState<Activity[]>([]);
   const [serverFiles, setServerFiles] = useState<(Activity & { originalName?: string; folderId?: string; size?: number })[]>([]);
   const [loadingActivity, setLoadingActivity] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
+  const [folderMsg, setFolderMsg] = useState("");
+  const [addingFolder, setAddingFolder] = useState(false);
+  const [customFolderIds, setCustomFolderIds] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/folders`).then(r => r.json()).then((data: Folder[]) => {
+      setCustomFolderIds(data.map(f => f.id));
+    }).catch(() => {});
+  }, [allFolders]);
 
   const fs = settings.fontSize === "small" ? "12px" : settings.fontSize === "large" ? "16px" : "14px";
 
@@ -144,6 +158,33 @@ function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUs
     fetchServerFiles();
   };
 
+  const handleAddFolder = async () => {
+    if (!newFolderName.trim()) { setFolderMsg("Please enter a folder name."); return; }
+    setAddingFolder(true);
+    setFolderMsg("");
+    try {
+      const res = await fetch(`${API_BASE}/folders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newFolderName.trim() }),
+      });
+      if (res.ok) {
+        setFolderMsg("✓ Folder added successfully!");
+        setNewFolderName("");
+        onFoldersChange();
+      } else {
+        setFolderMsg("Failed to add folder.");
+      }
+    } catch { setFolderMsg("Error. Check your connection."); }
+    setAddingFolder(false);
+  };
+
+  const handleDeleteFolder = async (id: string, name: string) => {
+    if (!confirm(`Delete folder "${name}"? Files in it will remain but won't be shown.`)) return;
+    await fetch(`${API_BASE}/folders/${id}`, { method: "DELETE" });
+    onFoldersChange();
+  };
+
   const tabBtn = (key: typeof tab, label: string) => (
     <button
       onClick={() => setTab(key)}
@@ -167,6 +208,7 @@ function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUs
           {isAdmin && tabBtn("activity", "📊 Activity Log")}
           {isAdmin && tabBtn("upload", "📤 Upload File")}
           {isAdmin && tabBtn("files", "📁 Manage Files")}
+          {isAdmin && tabBtn("folders", "🗂️ Folders")}
         </div>
 
         {tab === "settings" && (
@@ -218,13 +260,55 @@ function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUs
           </div>
         )}
 
+        {tab === "folders" && isAdmin && (
+          <div>
+            <h3 style={{ marginBottom: 16, fontSize: 14, color: BRAND, fontWeight: 700 }}>Manage Folders</h3>
+            <div style={{ marginBottom: 20, padding: 16, background: "var(--bg-main)", borderRadius: 10, border: "1px solid var(--border-color)" }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: BRAND, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 8 }}>Add New Folder</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  value={newFolderName}
+                  onChange={(e) => { setNewFolderName(e.target.value); setFolderMsg(""); }}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddFolder()}
+                  placeholder="Folder name…"
+                  style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "1.5px solid var(--border-color)", fontSize: fs, background: "var(--bg-card)", color: "var(--text-primary)", outline: "none" }}
+                />
+                <button onClick={handleAddFolder} disabled={addingFolder} style={{ padding: "10px 18px", background: BRAND, color: "white", border: "none", borderRadius: 8, fontWeight: 700, fontSize: fs, cursor: addingFolder ? "not-allowed" : "pointer" }}>
+                  {addingFolder ? "…" : "+ Add"}
+                </button>
+              </div>
+              {folderMsg && (
+                <div style={{ marginTop: 8, padding: "8px 12px", borderRadius: 6, background: folderMsg.startsWith("✓") ? "#e8f5e9" : "#fde8e8", color: folderMsg.startsWith("✓") ? GREEN : "#c0392b", fontWeight: 600, fontSize: 12 }}>
+                  {folderMsg}
+                </div>
+              )}
+            </div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#8a9db0", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>All Folders ({allFolders.length})</div>
+            <div style={{ maxHeight: 340, overflow: "auto" }}>
+              {allFolders.map((f) => (
+                <div key={f.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderBottom: "1px solid var(--border-color)", borderRadius: 6, marginBottom: 2, background: "var(--bg-main)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 14 }}>📁</span>
+                    <span style={{ fontSize: fs, color: "var(--text-primary)", fontWeight: 500 }}>{f.name}</span>
+                  </div>
+                  {customFolderIds.includes(f.id) ? (
+                    <button onClick={() => handleDeleteFolder(f.id, f.name)} style={{ padding: "5px 10px", background: "#fde8e8", border: "1px solid #f5c6c6", color: "#c0392b", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>🗑 Delete</button>
+                  ) : (
+                    <span style={{ fontSize: 11, color: "#8a9db0" }}>Default</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {tab === "upload" && isAdmin && (
           <div>
             <h3 style={{ marginBottom: 16, fontSize: 14, color: BRAND, fontWeight: 700 }}>Upload File to Portal</h3>
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 11, fontWeight: 700, color: BRAND, textTransform: "uppercase", letterSpacing: 0.8, display: "block", marginBottom: 6 }}>Target Folder</label>
               <select value={uploadFolder} onChange={(e) => setUploadFolder(e.target.value)} style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1.5px solid var(--border-color)", fontSize: fs, background: "var(--bg-card)", color: "var(--text-primary)" }}>
-                {INITIAL_FOLDERS.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+                {allFolders.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
               </select>
             </div>
             <div style={{ marginBottom: 16 }}>
@@ -264,7 +348,7 @@ function ControlPanel({ onClose, isAdmin, settings, onSettingsChange, loggedInUs
             ) : (
               <div style={{ maxHeight: 420, overflow: "auto" }}>
                 {serverFiles.map((f: any) => {
-                  const folder = INITIAL_FOLDERS.find((fl) => fl.id === f.folderId);
+                  const folder = allFolders.find((fl) => fl.id === f.folderId);
                   return (
                     <div key={f.id} style={{ padding: "12px 14px", borderBottom: "1px solid var(--border-color)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -334,6 +418,7 @@ function App() {
   const [toast, setToast] = useState<string | null>(null);
   const [showPanel, setShowPanel] = useState(false);
   const [serverDocs, setServerDocs] = useState<Doc[]>([]);
+  const [customFolders, setCustomFolders] = useState<Folder[]>([]);
   const [settings, setSettings] = useState<Settings>({
     theme: (localStorage.getItem("ap_theme") as "light" | "dark") || "light",
     fontSize: (localStorage.getItem("ap_fontSize") as "small" | "medium" | "large") || "medium",
@@ -356,8 +441,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (screen === "portal") fetchServerDocs();
+    if (screen === "portal") { fetchServerDocs(); fetchCustomFolders(); }
   }, [screen]);
+
+  const fetchCustomFolders = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/folders`);
+      if (res.ok) setCustomFolders(await res.json());
+    } catch {}
+  };
 
   const fetchServerDocs = async () => {
     try {
@@ -459,11 +551,13 @@ function App() {
 
       {showPanel && (
         <ControlPanel
-          onClose={() => { setShowPanel(false); fetchServerDocs(); }}
+          onClose={() => { setShowPanel(false); fetchServerDocs(); fetchCustomFolders(); }}
           isAdmin={isAdmin}
           settings={settings}
           onSettingsChange={updateSettings}
           loggedInUser={loggedInUser || ""}
+          allFolders={[...INITIAL_FOLDERS, ...customFolders]}
+          onFoldersChange={fetchCustomFolders}
         />
       )}
 
@@ -520,7 +614,7 @@ function App() {
               </div>
 
               <div style={{ fontSize: 10, fontWeight: 700, color: "#8a9db0", letterSpacing: 1, textTransform: "uppercase", padding: "12px 12px 8px" }}>Folders</div>
-              {INITIAL_FOLDERS.map((f) => {
+              {[...INITIAL_FOLDERS, ...customFolders].map((f) => {
                 const count = combinedDocs(f.id).length;
                 return (
                   <div
