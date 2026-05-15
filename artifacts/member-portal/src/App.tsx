@@ -21,7 +21,6 @@ const INITIAL_FOLDERS = [
   { id: "f10", name: "Events Attended by API" },
   { id: "f11", name: "Store Planograms" },
   { id: "f12", name: "Monthly Newsletters" },
-  { id: "f13", name: "App" },
 ];
 
 interface Doc {

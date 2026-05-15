@@ -3,6 +3,17 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 
+interface FileMeta {
+  id: string;
+  originalName: string;
+  storedName: string;
+  folderId: string;
+  size: number;
+  date: string;
+  type: string;
+  uploadedBy: string;
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, "../../uploads");
 const FOLDERS_FILE = path.join(UPLOADS_DIR, "folders.json");
@@ -54,6 +65,21 @@ router.delete("/folders/:id", (req, res) => {
   }
   folders.splice(idx, 1);
   writeFolders(folders);
+
+  const META_FILE = path.join(UPLOADS_DIR, "meta.json");
+  if (fs.existsSync(META_FILE)) {
+    const meta: FileMeta[] = JSON.parse(fs.readFileSync(META_FILE, "utf-8"));
+    const remaining = meta.filter((f) => {
+      if (f.folderId === req.params.id) {
+        const filePath = path.join(UPLOADS_DIR, f.storedName);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        return false;
+      }
+      return true;
+    });
+    fs.writeFileSync(META_FILE, JSON.stringify(remaining, null, 2));
+  }
+
   res.json({ success: true });
 });
 
