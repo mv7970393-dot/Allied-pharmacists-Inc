@@ -1,59 +1,47 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.resolve(__dirname, "../../uploads");
-const LOG_FILE = path.join(DATA_DIR, "activity.json");
-
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-interface ActivityEntry {
-  id: string;
-  email: string;
-  action: string;
-  detail: string;
-  time: string;
-  timestamp: number;
-}
-
-function readLog(): ActivityEntry[] {
-  if (!fs.existsSync(LOG_FILE)) return [];
-  return JSON.parse(fs.readFileSync(LOG_FILE, "utf-8"));
-}
-
-function writeLog(entries: ActivityEntry[]): void {
-  fs.writeFileSync(LOG_FILE, JSON.stringify(entries, null, 2));
-}
+import { db } from "@workspace/db";
+import { activityTable } from "@workspace/db";
+import { desc } from "drizzle-orm";
 
 const router = Router();
 
-router.get("/activity", (_req, res) => {
-  const log = readLog();
-  res.json(log.slice(-200).reverse());
+router.get("/activity", async (_req, res) => {
+  try {
+    const entries = await db.select().from(activityTable).orderBy(desc(activityTable.createdAt)).limit(200);
+    res.json(entries.map(e => ({
+      id: e.id,
+      email: e.email,
+      action: e.action,
+      detail: e.detail,
+      time: e.time,
+      timestamp: Number(e.timestamp),
+    })));
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch activity" });
+  }
 });
 
-router.post("/activity", (req, res) => {
+router.post("/activity", async (req, res) => {
   const { email, action, detail } = req.body as { email: string; action: string; detail?: string };
   if (!email || !action) {
     res.status(400).json({ error: "email and action are required" });
     return;
   }
-  const entry: ActivityEntry = {
-    id: `act-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  const now = Date.now();
+  const entry = {
+    id: `act-${now}-${Math.random().toString(36).slice(2)}`,
     email,
     action,
     detail: detail || "",
     time: new Date().toLocaleString("en-CA", { hour12: false }),
-    timestamp: Date.now(),
+    timestamp: String(now),
   };
-  const log = readLog();
-  log.push(entry);
-  writeLog(log);
-  res.status(201).json(entry);
+  try {
+    await db.insert(activityTable).values(entry);
+    res.status(201).json({ ...entry, timestamp: now });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to log activity" });
+  }
 });
 
 export default router;
